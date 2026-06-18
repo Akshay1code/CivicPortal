@@ -1,0 +1,12 @@
+let express=require('express')
+let cors=require('cors')
+require('dotenv').config()
+let auth=require('./routes/authRouter')
+let com=require('./routes/complaintRouter')
+let port=process.env.PORT
+let app=express()
+app.use(express.json())
+app.use(cors())
+app.use('/auth',auth)
+app.use('/complaints',com)
+app.listen(port,()=>console.log("Server is listening at",port))
