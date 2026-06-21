@@ -4,16 +4,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify'
 import '../styles/Profile.css';
 import axios from 'axios'
+import useAuthStore from '../store/auth.token';
 function Profile() {
   let[profile,setProfile]=useState({})
   let nav=useNavigate()
   let fetchUserDetails=()=>{
-    axios.get(`http://localhost:3000/auth/profile/${localStorage.getItem('userId')}`)
+    const token = useAuthStore.getState().accessToken;
+    console.log(token)
+    axios.get(`http://localhost:3000/auth/profile`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    })
     .then((payload)=>setProfile(payload.data))
-    .catch((err)=>toast.error(err.response.data.message))
+    .catch((err)=>console.error(err.stack))
   }
   let handleDelete=()=>{
-    axios.delete(`http://localhost:3000/auth/delete/${localStorage.getItem('userId')}`)
+    const token = useAuthStore.getState().accessToken;
+    axios.delete(`http://localhost:3000/auth/delete`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    })
     .then((del)=>{
       toast.success(del.data.message||del)
       nav('/')

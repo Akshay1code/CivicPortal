@@ -6,7 +6,7 @@ import RightPanel from '../components/RightPanel';
 import Sidebar from '../components/SideBar';
 import '../styles/Dashboard.css';
 import axios from 'axios';
-
+import useAuthStore from '../store/auth.token.js';
 import {toast} from 'react-toastify'
 import {
   FaRoad, FaAmbulance, FaTree, FaTrash, FaTint, FaBolt,
@@ -50,11 +50,17 @@ function ComplaintCard({ complaint, index ,setComplaints}) {
   const cat    = CATEGORY_META[complaint.activeCategory?.id || complaint.category] || CATEGORY_META.roads;
   const status = OFFICIAL_STATUS[complaint.status] || OFFICIAL_STATUS.open;
   const likes  = complaint.likes  ?? Math.floor(Math.random() * 200);
+  const accessToken=useAuthStore.getState().accessToken
   // Demo poster: use real field if available, else pick from demo list
   const poster = complaint.user || DEMO_POSTERS[index % DEMO_POSTERS.length];
   let handleLikes=(id)=>{
     let isUser=false
-    axios.post(`http://localhost:3000/complaints/like/${id}/${localStorage.getItem('userId')}`)
+    console.log(accessToken)
+    axios.post(`http://localhost:3000/complaints/like/${id}`,{},{
+      headers:{
+        Authorization:`Bearer ${accessToken}`
+      }
+    })
     .then((res)=>{
         isUser=res.data
         if(isUser){
@@ -140,8 +146,16 @@ function Dashboard() {
       .then((res) => setComplaints(res.data))
       .catch((err) => console.error('Failed to fetch complaints:', err?.response));
   };
+
   let fetchUserDetails=()=>{
-    axios.get(`http://localhost:3000/auth/profile/${localStorage.getItem('userId')}`)
+    const token = useAuthStore.getState().accessToken;
+    console.log('Bruh : ',token)
+    axios.get(`http://localhost:3000/auth/profile`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    })
+
     .then((payload)=>setProfile(payload.data))
     .catch((err)=>toast.error(err.response.data.message))
   }

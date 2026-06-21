@@ -1,0 +1,222 @@
+.error-page-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #E1F5EE;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.error-bg-blob {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background-color: #1D9E75;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.1;
+}
+
+.error-bg-blob-2 {
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 40vw;
+  height: 40vw;
+  background-color: #085041;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.05;
+}
+
+.error-card {
+  position: relative;
+  z-index: 1;
+  background: white;
+  border: 2px solid #E1F5EE;
+  border-radius: 24px;
+  padding: 48px;
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(8, 80, 65, 0.08);
+}
+
+/* Prominent lock icon wrapper */
+.error-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background-color: #fee2e2;
+  color: #ef4444; /* Danger color from site palette */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: softPulse 2s infinite ease-in-out;
+}
+
+/* Pulsing animation */
+@keyframes softPulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Respect prefers-reduced-motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .error-icon-wrapper {
+    animation: none;
+  }
+}
+
+.error-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #085041; /* Primary dark */
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.error-message {
+  color: #4b5563; /* Gray text from site */
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+/* Detail Panel */
+.error-details-panel {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 32px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #085041;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.detail-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Action Buttons */
+.error-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.btn-error-primary {
+  background-color: #1D9E75; /* Primary site color */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-error-primary:hover {
+  background-color: #085041;
+}
+
+.btn-error-secondary {
+  background-color: transparent;
+  color: #085041;
+  border: 2px solid #E1F5EE;
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-error-secondary:hover {
+  border-color: #085041;
+  background-color: #f9fafb;
+}
+
+/* Footer Note */
+.error-footer {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.error-footer a {
+  color: #1D9E75;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.error-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Fully Responsive */
+@media (max-width: 600px) {
+  .error-card {
+    padding: 32px 20px;
+  }
+  .error-actions {
+    flex-direction: column;
+  }
+  .btn-error-primary, .btn-error-secondary {
+    width: 100%;
+  }
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

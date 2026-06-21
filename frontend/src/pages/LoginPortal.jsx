@@ -4,12 +4,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import '../styles/Auth.css';
+import useAuthStore from '../store/auth.token';
 
 function LoginPortal() {
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
   let nav = useNavigate();
-
+  let setAccessToken = useAuthStore((state) => state.setAccessToken);
   let handleSubmit = (e) => {
     e.preventDefault();
     if (username === "" || password.trim() === "") {
@@ -18,10 +19,15 @@ function LoginPortal() {
     }
     let payload = { username: username.trim(), password: password.trim() };
     let role="";
-    axios.post("http://localhost:3000/auth/signin", payload)
+    
+    axios.post("http://localhost:3000/auth/signin", payload,{
+      withCredentials:true
+    })
       .then((res) => {
         toast.success(res.data?.message || res);
-        localStorage.setItem("userId",res.data.userId)
+        console.log(res.data.accessToken)
+        setAccessToken(res.data.accessToken);
+        console.log("Zustand: ",useAuthStore.getState());
         role=res.data.role
         if(role=="ADMIN"){
           nav('/admin-dashboard')
@@ -30,7 +36,7 @@ function LoginPortal() {
         nav('/dashboard');
       })
       .catch((err) => {
-        console.log(err.response);
+        console.log(err.stack);
         toast.error(err.data?.message || err.response?.data?.message || "Login Failed");
       });
   }
