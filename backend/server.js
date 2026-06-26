@@ -19,7 +19,7 @@ app.use(cookieParser())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cors({
-    origin: "http://civic-portal-six.vercel.app",
+    origin: "https://civic-portal-six.vercel.app",
     credentials: true
 }))
 app.use('/auth',auth)
