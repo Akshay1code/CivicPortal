@@ -1,3 +1,7 @@
+*{
+  font-family: poppins;
+}
+
 .error-page-container {
   position: fixed;
   top: 0;

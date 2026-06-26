@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaChartPie, FaClipboardList, FaChartLine, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import axios from 'axios';
+import useAuthStore from '../store/auth.token';
 
 const sidebarStyles = {
   sidebar: {
@@ -64,11 +66,21 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleLogout = async() => {
+    useAuthStore.getState().clearAccessToken();
+    let response=await axios.get(`http://localhost:3000/auth/logout`,{
+      withCredentials:true
+    })
+    if(response.data.status){
+      navigate('/')
+      return
+    }
+    toast.error("Couldn't perform logout")
+
+  };
+
   const navItems = [
-    { label: 'Dashboard', path: '/admin-dashboard', icon: <FaChartPie /> },
-    { label: 'Complaints', path: '/admin-complaints', icon: <FaClipboardList /> },
-    { label: 'Analysis', path: '/admin-dashboard', icon: <FaChartLine /> }, // Pointing to dashboard for now
-    { label: 'Settings', path: '/admin-dashboard', icon: <FaCog /> } // Pointing to dashboard for now
+    { label: 'Complaints', path: '/admin-dashboard', icon: <FaClipboardList /> },
   ];
 
   return (
@@ -93,7 +105,7 @@ export default function AdminSidebar() {
           );
         })}
       </div>
-      <div style={sidebarStyles.logoutBtn}>
+      <div style={sidebarStyles.logoutBtn} onClick={handleLogout}>
         <FaSignOutAlt /> Logout
       </div>
     </div>

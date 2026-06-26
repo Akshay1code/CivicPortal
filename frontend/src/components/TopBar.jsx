@@ -1,19 +1,28 @@
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import useAuthStore from '../store/auth.token';
 function TopBar({profile, setProfile}) {
   const avatar = profile?.fullName?.charAt(0) || "?";
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('userId');
-    navigate('/login');
+  const handleLogout = async() => {
+    useAuthStore.getState().clearAccessToken();
+    let response=await axios.get(`http://localhost:3000/auth/logout`,{
+      withCredentials:true
+    })
+    if(response.data.status){
+      navigate('/')
+      return
+    }
+    toast.error("Couldn't perform logout")
+
   };
 
   return (
     <div className="topbar">
       <div className="topbar-left">
-        <i className="ti ti-menu-2" />
         <span className="topbar-title">Welcome {profile.fullName}</span>
       </div>
       <div className="topbar-right">

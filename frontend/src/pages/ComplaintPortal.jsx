@@ -1,69 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useScroll } from 'framer-motion';
+﻿import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaRoad, FaAmbulance, FaTree, FaTrash, FaTint, FaBolt } from 'react-icons/fa';
+import { FaCamera, FaImage, FaTimes, FaMapMarkerAlt } from 'react-icons/fa';
 import '../styles/ComplaintPortal.css';
-import {toast} from 'react-toastify'
-import axios from 'axios'
-const CATEGORIES = [
-  { id: 'roads', icon: <FaRoad />, name: 'Roads & Infrastructure' },
-  { id: 'accident', icon: <FaAmbulance />, name: 'Accident / Emergency' },
-  { id: 'tree', icon: <FaTree />, name: 'Fallen Tree' },
-  { id: 'garbage', icon: <FaTrash />, name: 'Garbage / Sanitation' },
-  { id: 'water', icon: <FaTint />, name: 'Water Supply' },
-  { id: 'electricity', icon: <FaBolt />, name: 'Electricity' }
-];
+import { toast } from 'react-toastify';
+import useAuthStore from '../store/auth.token.js';
+import axios from 'axios';
 
 function ComplaintPortal() {
-  const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
-  const [user,setUser]=useState("");
-  let [title,setTitle]=useState("");
-  let [description,setDescription]=useState("");
-  let [location,setLocation]=useState("");
-  let fetchUserDetails=()=>{
-    axios.get(`http://localhost:3000/auth/profile/${localStorage.getItem('userId')}`)
-    .then((payload)=>{console.log(payload.data);setUser(payload.data.fullName)})
-    .catch((err)=>toast.error(err.response.data.message))
+  const accessToken = useAuthStore.getState().accessToken;
+  const [user, setUser] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [dragging, setDragging] = useState(false);
+
+  function handleImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
   }
-  useEffect(
-    ()=>{
-      fetchUserDetails()
+
+  async function reverseGeocode(lat, lon) {
+    try {
+      const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+        params: {
+          lat,
+          lon,
+          format: 'json',
+        },
+      });
+      setLocation(response.data.display_name);
+    } catch (err) {
+      console.error(err.stack || err);
     }
-    ,[]
-  )
-  let handleSubmit=()=>{
-    if(! title.trim()===""||! description.trim()===""||! location.trim()===""){
-      toast.error('Empty fields')
-    }
-    let payload={
-      user:user,
-      title:title.trim(),
-      description:description.trim(),
-      location:location.trim(),
-      category:activeCategory.id,
-      likes:0,
-      status:"PENDING",
-      supportedUsers:[]
-    }
-    console.log(user)
-    axios.post('http://localhost:3000/complaints/register',payload)
-    .then((status)=>toast.success(status.data.message))
-    .catch((err)=>toast.error(err.response.data.message))
   }
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/auth/profile', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((payload) => {
+        setUser(payload.data.fullName);
+      })
+      .catch((err) => toast.error(err.response?.data?.message || 'Could not load profile'));
+  }, [accessToken]);
+
+  const handleSubmit = () => {
+    if (title.trim() === '' || description.trim() === '' || location.trim() === '') {
+      toast.error('Please fill in all text fields (Title, Description, Location)');
+      return;
+    }
+    if (!image) {
+      toast.error('Please select an image before submitting');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('user', user);
+    formData.append('title', title.trim());
+    formData.append('description', description.trim());
+    formData.append('location', location.trim());
+
+    axios
+      .post('http://localhost:3000/complaints/register', formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((status) => toast.success(status.data.message))
+      .catch((err) => toast.error(err.response?.data?.message || 'Submission failed'));
+  };
+
   const pageVariants = {
     initial: { opacity: 0, y: 50 },
     in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -50 }
+    out: { opacity: 0, y: -50 },
   };
 
   const pageTransition = {
-    type: "tween",
-    ease: "anticipate",
-    duration: 0.5
+    type: 'tween',
+    ease: 'anticipate',
+    duration: 0.5,
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="complaint-container"
       initial="initial"
       animate="in"
@@ -71,58 +99,126 @@ function ComplaintPortal() {
       variants={pageVariants}
       transition={pageTransition}
     >
-      <Link to="/dashboard" className="back-link" style={{ top: '24px', left: '24px', position: 'absolute', color: '#085041', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
-        Back to Dashboard
+      <Link to="/dashboard" className="back-link" aria-label="Back to Dashboard">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
       </Link>
 
       <div className="complaint-card">
-        {/* Left Form Section */}
-        <div className="complaint-form-section">
-          <div className="complaint-header">
-            {activeCategory.icon} {activeCategory.name}
-          </div>
+        <section className="complaint-form-section">
+          <div className="complaint-header">Register Complaint</div>
 
           <div className="form-group">
             <label>Title</label>
-            <input type="text" placeholder="e.g. Pothole near Kurla Station" 
-            onChange={(e)=>setTitle(e.target.value)}/>
+            <input
+              type="text"
+              placeholder="e.g. Pothole near Kurla Station"
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
 
           <div className="form-group">
             <label>Description</label>
-            <textarea placeholder="Provide details about the issue..."
-            onChange={(e)=>setDescription(e.target.value)}></textarea>
+            <textarea
+              placeholder="Provide details about the issue..."
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
 
           <div className="form-group">
             <label>Location</label>
-            <input type="text" placeholder="e.g. Kurla Station Road" 
-            onChange={(e)=>setLocation(e.target.value)}/>
+            <button
+              type="button"
+              className={`location-btn ${location ? 'detected' : ''}`}
+              onClick={() => {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                  const lat = position.coords.latitude;
+                  const lon = position.coords.longitude;
+                  await reverseGeocode(lat, lon);
+                });
+              }}
+            >
+              {location ? location : <><FaMapMarkerAlt /> Detect Location</>}
+            </button>
           </div>
 
-          <button className="btn-submit" onClick={handleSubmit}>Submit</button>
-        </div>
+          <button type="button" className="btn-submit" onClick={handleSubmit}>
+            Submit
+          </button>
+        </section>
 
-        {/* Right Categories Section */}
-        <div className="complaint-categories-section">
-          <div className="categories-title">Select Category</div>
-          <div className="categories-grid">
-            {CATEGORIES.map(cat => (
-              <div 
-                key={cat.id} 
-                className={`category-card ${activeCategory.id === cat.id ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                <div className="category-icon">{cat.icon}</div>
-                <div className="category-name">{cat.name}</div>
+        <section className="complaint-image-section">
+          <input
+            id="img-input"
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={(e) => handleImageFile(e.target.files[0])}
+          />
+
+          <div className="img-card-close-row">
+            <span className="img-card-label">Photo Evidence</span>
+          </div>
+
+          {imagePreview ? (
+            <div className="img-full-cover">
+              <img src={imagePreview} alt="preview" className="img-full-photo" />
+              <div className="img-full-overlay">
+                <div className="img-full-overlay-text">
+                  <FaImage className="img-full-overlay-icon" />
+                  <span className="img-full-filename">{image?.name || 'Photo attached'}</span>
+                </div>
+                <div className="img-full-overlay-actions">
+                  <button
+                    type="button"
+                    className="img-overlay-btn img-overlay-btn--change"
+                    onClick={() => document.getElementById('img-input').click()}
+                  >
+                    <FaCamera /> Change
+                  </button>
+                  <button
+                    type="button"
+                    className="img-overlay-btn img-overlay-btn--remove"
+                    onClick={() => {
+                      setImage(null);
+                      setImagePreview(null);
+                    }}
+                  >
+                    <FaTimes /> Remove
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ) : (
+            <div
+              className={`img-card-body ${dragging ? 'dragging' : ''}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragging(true);
+              }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragging(false);
+                handleImageFile(e.dataTransfer.files[0]);
+              }}
+            >
+              <div className="img-circle" onClick={() => document.getElementById('img-input').click()}>
+                <FaCamera className="img-circle-icon" />
+              </div>
+              <div className="img-card-text">
+                <p className="img-card-heading">Add a Photo</p>
+                <p className="img-card-sub">Click the camera or drag and drop an image here</p>
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </motion.div>
   );
 }
 
 export default ComplaintPortal;
+

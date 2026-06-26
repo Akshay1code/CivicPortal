@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
+const { checkActiveSession } = require('../controllers/auth.controller');
 
 let getConnection=async()=>{
     let client=new MongoClient(process.env.MONGO_URL)
@@ -7,6 +8,15 @@ let getConnection=async()=>{
     let db = client.db('civicPortal')
     let coll = db.collection('sessionStorage')
     return {client,coll}
+}
+let checkIfExists=async(sessionId)=>{
+    console.log(sessionId)
+    let {client,coll} = await getConnection()
+    let isSession = await coll.findOne({_id:new ObjectId(sessionId)})
+    if(!isSession){
+        return false
+    }
+    return true
 }
 let createSessionId=async(userId,ip,userAgent,refreshToken)=>{
     try{
@@ -27,7 +37,7 @@ let createSessionId=async(userId,ip,userAgent,refreshToken)=>{
         })
 
         await client.close()
-        return session._id
+        return session.insertedId
     }
     catch(err){
         return err.stack
@@ -49,7 +59,9 @@ let updateSessionId=async (refreshToken,sessionId)=>{
 
 let deleteSessionId=async (sessionId)=>{
     try{
-        await deleteOne(sessionId)
+        let {client,coll} = await getConnection()
+        await coll.deleteOne({_id:new ObjectId(sessionId)})
+        await client.close()
         return true
     }
     catch(err){
@@ -57,4 +69,4 @@ let deleteSessionId=async (sessionId)=>{
     }
 }
 
-module.exports={createSessionId,updateSessionId,deleteSessionId}
+module.exports={createSessionId,updateSessionId,deleteSessionId,checkIfExists}

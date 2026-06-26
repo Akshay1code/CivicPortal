@@ -1,9 +1,12 @@
 /* Landing.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{
+  font-family: poppins;
+}
 
 .landing-container {
   font-family: 'Inter', sans-serif;
-  color: #333;
+  color: #0f3d31;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -11,6 +14,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
@@ -28,8 +32,11 @@
 .hero-wrapper {
   position: relative;
   display: flex;
-  min-height: 85vh;
-  background-color: #ffffff;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at top right, rgba(245, 226, 112, 0.18), transparent 30%),
+    linear-gradient(180deg, #f7fff8 0%, #eef9f1 100%);
   overflow: hidden;
 }
 
@@ -39,7 +46,7 @@
   left: 0;
   width: 65%;
   height: 100%;
-  background-color: #1D9E75;
+  background: linear-gradient(135deg, #2fb56e 0%, #1d9e75 45%, #085041 100%);
   border-bottom-right-radius: 150px;
   z-index: 1;
 }
@@ -76,7 +83,7 @@
   letter-spacing: 1.5px;
   margin-bottom: 20px;
   font-weight: 700;
-  color: #E1F5EE;
+  color: #efffeb;
 }
 
 .hero-title {
@@ -88,8 +95,8 @@
 }
 
 .hero-title .accent {
-  color: #085041;
-  background-color: #E1F5EE;
+  color: #064437;
+  background: linear-gradient(135deg, #f7f8cc 0%, #edf7df 100%);
   padding: 2px 12px;
   border-radius: 8px;
   display: inline-block;
@@ -99,7 +106,7 @@
   font-size: 18px;
   line-height: 1.6;
   margin-bottom: 40px;
-  color: #E1F5EE;
+  color: #f3fff4;
   max-width: 480px;
 }
 
@@ -124,24 +131,25 @@
 }
 
 .btn-primary {
-  background-color: white;
-  color: #085041;
-  border: 2px solid white;
+  background: linear-gradient(135deg, #fffdf0 0%, #f7f8cc 100%);
+  color: #064437;
+  border: 2px solid rgba(247, 248, 204, 0.95);
+  box-shadow: 0 12px 24px rgba(8, 80, 65, 0.12);
 }
 
 .btn-primary:hover {
-  background-color: #E1F5EE;
+  background: linear-gradient(135deg, #fff7a8 0%, #f7f8cc 100%);
 }
 
 .btn-outline {
   background-color: transparent;
   color: white;
-  border: 2px solid white;
+  border: 2px solid rgba(247, 248, 204, 0.95);
 }
 
 .btn-outline:hover {
-  background-color: #085041;
-  border-color: #085041;
+  background: rgba(8, 80, 65, 0.22);
+  border-color: #f7f8cc;
 }
 
 .btn-outline svg {
@@ -164,7 +172,7 @@
   height: 480px;
   background-color: white;
   border-radius: 36px;
-  border: 8px solid #085041;
+  border: 8px solid #064437;
   position: absolute;
   overflow: hidden;
   z-index: 2;
@@ -180,11 +188,11 @@
 .phone-2 {
   transform: translateX(60px) translateY(40px);
   z-index: 2;
-  border-color: #E1F5EE;
+  border-color: #f7f8cc;
 }
 
 .phone-header {
-  background-color: #085041;
+  background: linear-gradient(135deg, #064437 0%, #085041 100%);
   padding: 20px 16px 12px;
   color: white;
   font-weight: 600;
@@ -193,17 +201,17 @@
 }
 
 .phone-2 .phone-header {
-  background-color: #1D9E75;
+  background: linear-gradient(135deg, #1d9e75 0%, #2fb56e 100%);
 }
 
 .phone-body {
   padding: 16px;
   flex: 1;
-  background-color: #f9fafb;
+  background: linear-gradient(180deg, #fbfffb 0%, #f3fbf2 100%);
 }
 
 .phone-card {
-  background: white;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fff8 100%);
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 12px;
@@ -214,7 +222,7 @@
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #333;
+  color: #0f3d31;
 }
 
 .badge {
@@ -226,25 +234,25 @@
 }
 
 .badge-open {
-  background-color: #fee2e2;
-  color: #ef4444;
+  background: linear-gradient(135deg, #fef9c3 0%, #fff0a3 100%);
+  color: #8c6b00;
 }
 
 .badge-progress {
-  background-color: #fef3c7;
-  color: #f59e0b;
+  background: linear-gradient(135deg, #d7f1df 0%, #b9e7c8 100%);
+  color: #0f6e56;
 }
 
 .badge-resolved {
-  background-color: #d1fae5;
-  color: #10b981;
+  background: linear-gradient(135deg, #d1fae5 0%, #e8fbef 100%);
+  color: #085041;
 }
 
 .phone-bg-circle {
   position: absolute;
   width: 360px;
   height: 360px;
-  border: 2px dashed #E1F5EE;
+  border: 2px dashed rgba(247, 248, 204, 0.85);
   border-radius: 50%;
   z-index: 1;
   animation: rotate 60s linear infinite;
@@ -254,7 +262,7 @@
   position: absolute;
   width: 12px;
   height: 12px;
-  background: #E1F5EE;
+  background: #f7f8cc;
   border-radius: 50%;
 }
 

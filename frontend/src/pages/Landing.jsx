@@ -1,9 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../styles/Landing.css';
-
+import axios from 'axios'
 function Landing() {
+  let nav=useNavigate();
+  let sessionCheck=async()=>{
+    let res=await axios.get(`http://localhost:3000/auth/session-active`,{
+      withCredentials:true
+    })
+    console.log(res.data.status)
+    if(res.data.status){
+      nav('/dashboard')
+    }
+  }
   const pageVariants = {
     initial: { opacity: 0, x: -100 },
     in: { opacity: 1, x: 0 },
@@ -15,7 +25,12 @@ function Landing() {
     ease: "anticipate",
     duration: 0.5
   };
-
+  useEffect(
+    ()=>{
+      sessionCheck()
+    }
+    ,[]
+  )
   return (
     <motion.div 
       className="landing-container"
@@ -40,12 +55,6 @@ function Landing() {
             </p>
             <div className="hero-actions">
               <Link to="/login" className="btn btn-primary">File a Complaint</Link>
-              <button className="btn btn-outline">
-                <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                Watch Video
-              </button>
             </div>
           </div>
 
@@ -96,56 +105,6 @@ function Landing() {
         Join 500+ municipalities using Civic Portal
       </div>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </div>
-            <h3>Easy complaint filing</h3>
-            <p>Citizens can quickly submit issues with photos and location data in just a few taps.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
-            <h3>Real-time tracking</h3>
-            <p>Keep everyone informed with live status updates and transparent progress tracking.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
-            </div>
-            <h3>Department routing</h3>
-            <p>Automatically route complaints to the correct municipal department for faster response.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            </div>
-            <h3>Smart notifications</h3>
-            <p>Automated alerts keep citizens and staff updated at every stage of the resolution process.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Strip */}
-      <section className="stats-strip">
-        <div className="stat-item">
-          <div className="stat-number">78%</div>
-          <div className="stat-label">Faster Resolution</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-number">500+</div>
-          <div className="stat-label">Municipalities</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-number">2M+</div>
-          <div className="stat-label">Complaints Resolved</div>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section className="how-it-works">
         <h2 className="section-title">How It Works</h2>
@@ -153,25 +112,31 @@ function Landing() {
           <div className="step">
             <div className="step-arrow"></div>
             <div className="step-number">1</div>
-            <h4>File a complaint</h4>
-            <p>Submit an issue through our mobile-friendly portal.</p>
+            <h4>Register a complaint</h4>
+            <p>Start by opening the portal and registering your civic issue.</p>
           </div>
           <div className="step">
             <div className="step-arrow"></div>
             <div className="step-number">2</div>
-            <h4>Auto-assigned</h4>
-            <p>The system routes the issue to the right department.</p>
+            <h4>Take a picture</h4>
+            <p>Capture a clear photo of the complaint issue for better review.</p>
           </div>
           <div className="step">
             <div className="step-arrow"></div>
             <div className="step-number">3</div>
-            <h4>Track progress</h4>
-            <p>Get real-time updates as work is being done.</p>
+            <h4>Click register</h4>
+            <p>Submit the complaint after adding the photo and required details.</p>
           </div>
           <div className="step">
+            <div className="step-arrow"></div>
             <div className="step-number">4</div>
-            <h4>Resolved & closed</h4>
-            <p>The issue is fixed and the complaint is closed.</p>
+            <h4>Gain priority support</h4>
+            <p>More support from other citizens pushes your complaint higher in the queue.</p>
+          </div>
+          <div className="step">
+            <div className="step-number">5</div>
+            <h4>Admins acknowledge and resolve</h4>
+            <p>Admins visit, acknowledge the complaint, and work toward resolution.</p>
           </div>
         </div>
       </section>

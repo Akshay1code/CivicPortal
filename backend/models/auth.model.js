@@ -25,12 +25,12 @@ let addUser=async(data,res)=>{
 
 let isUser=async(data,ip,userAgent,res)=>{
     if(!data){
-        res.status(401).json({message:"Data fuck hogya bhau"})
+        res.status(401).json({message:"No Data Provided"})
         return
     }
     let {client,coll} = await getConnection()
-    let user=await coll.findOne({username:data.username,password:data.password})
-    if(!user){
+    let user=await coll.findOne({username:data.username})
+    if(!user || !bcrypt.compare(data.password,user.password)){
         client.close()
         return res.status(404).json({message:"Invalid username or password"})
     }
@@ -54,7 +54,6 @@ let isUser=async(data,ip,userAgent,res)=>{
 }
 
 let getProfile=async (accessToken,res)=>{
-    console.log("PROFILE ACCESS TOKEN:", accessToken);
     let {userId,sessionId} = jwt.fetchTokenDetails(accessToken)
     let {client,coll}=await getConnection()
     coll.findOne({_id:new ObjectId(userId)})
@@ -63,16 +62,61 @@ let getProfile=async (accessToken,res)=>{
     .finally(()=>client.close())
 }
 
+let updateDetails=async(accessToken,data,res)=>{
+    try{
+        let {userId}=jwt.fetchTokenDetails(accessToken)
+        let {client,coll}=await getConnection()
+        let existingUser=await coll.findOne({_id:new ObjectId(userId)})
+        if(!existingUser){
+            await client.close()
+            return res.status(404).json({message:"User not found"})
+        }
+
+        let updateData={}
+        if(data.fullName !== undefined && data.fullName.trim() !== ''){
+            updateData.fullName=data.fullName.trim()
+        }
+        if(data.username !== undefined && data.username.trim() !== ''){
+            let username=data.username.trim()
+            if(username !== existingUser.username){
+                let takenUser=await coll.findOne({username})
+                if(takenUser){
+                    await client.close()
+                    return res.status(409).json({message:"Username already exists"})
+                }
+            }
+            updateData.username=username
+        }
+        if(data.password !== undefined && data.password.trim() !== ''){
+            updateData.password=await bcrypt.hash(data.password.trim(),10)
+        }
+
+        await coll.updateOne(
+            {_id:new ObjectId(userId)},
+            {$set:updateData}
+        )
+        let updatedUser=await coll.findOne({_id:new ObjectId(userId)},{projection:{password:0}})
+        await client.close()
+        return res.status(200).json({message:"Updated Successfully",user:updatedUser})
+    }
+    catch(err){
+        console.log(err.stack)
+        return res.status(500).json({message:"Couldnt update", err:err.stack})
+    }
+}
+
 let deleteProfile=async (accessToken,res)=>{
     
     try{
-        let {id,sessionId} = jwt.fetchTokenDetails(accessToken)
+        let {userId,sessionId} = jwt.fetchTokenDetails(accessToken)
         let {client,coll}=await getConnection()
-        await coll.deleteOne({_id:new ObjectId(id)})
-        if(! await session.deleteSessionId(sessionId)){
-            res.status(401).json({message:"Couldnt delete session Id"})
-        }
-        res.clearCookie("refreshToken")   
+        await coll.deleteOne({_id:new ObjectId(userId)})
+        await session.deleteSessionId(sessionId)
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        })
         res.status(200).json({message:"Deleted Successfully"})
         await client.close()
     }
@@ -93,7 +137,6 @@ let isRefreshToken=(req,res)=>{
 
 let generatetokens=(req,res)=>{
     let refreshToken1=req.cookies.refreshToken
-    console.log("TOKEN:", req.cookies.refreshToken);
     let{userId,sessionId,role}=jwt.fetchTokenDetails(refreshToken1)
     let {accessToken,refreshToken}=jwt.createTokens(userId,sessionId,role)
     res.cookie("refreshToken",refreshToken,{
@@ -103,6 +146,10 @@ let generatetokens=(req,res)=>{
         maxAge:7*24*60*60*1000
     })
     res.status(200).json({accessToken})
-
 }
-module.exports={addUser,isUser,getProfile,deleteProfile,isRefreshToken,generatetokens}
+
+let checkActiveSession=async(sessionId,res)=>{
+    let status = await session.checkIfExists(sessionId)
+    res.status(200).json({status})
+}
+module.exports={addUser,isUser,getProfile,updateDetails,deleteProfile,isRefreshToken,generatetokens,checkActiveSession}

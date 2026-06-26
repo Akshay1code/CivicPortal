@@ -1,4 +1,7 @@
 /* Loading.css */
+*{
+  font-family: poppins;
+}
 .loading-container {
   display: flex;
   flex-direction: column;

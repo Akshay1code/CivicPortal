@@ -1,8 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
+import { FaInfoCircle } from 'react-icons/fa';
 import '../styles/Auth.css';
 
 function Signup() {
@@ -11,6 +12,22 @@ function Signup() {
   let [password, setPassword] = useState("");
   let navigate = useNavigate();
   let [confirmPassword, setConfirmPassword] = useState("");
+  const [showGuide, setShowGuide] = useState(false);
+  const guideTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (guideTimerRef.current) clearTimeout(guideTimerRef.current);
+    };
+  }, []);
+
+  const handleReadThis = () => {
+    if (guideTimerRef.current) clearTimeout(guideTimerRef.current);
+    setShowGuide(true);
+    guideTimerRef.current = setTimeout(() => {
+      setShowGuide(false);
+    }, 5000);
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -70,13 +87,30 @@ function Signup() {
       
       <Link to="/" className="back-link">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
-        Back to Home
       </Link>
 
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="auth-title">Create Account</h1>
           <p className="auth-subtitle">Join the Civic Portal community</p>
+        </div>
+
+        <div className="auth-help-trigger-wrap">
+          <button type="button" className="auth-help-trigger" onClick={handleReadThis}>
+            <span className="auth-help-trigger-icon">
+              <FaInfoCircle />
+            </span>
+            <span>Read this</span>
+          </button>
+
+          <div className={`auth-help-popover ${showGuide ? 'auth-help-popover--visible' : 'auth-help-popover--hidden'}`}>
+            <div className="auth-help-popover-title">Account rules</div>
+            <div className="auth-help-popover-list">
+              <p>Full name must contain exactly 3 words, using only letters and spaces.</p>
+              <p>Username must start with a letter and be 5 to 20 characters long. Use letters, numbers, or underscores.</p>
+              <p>Password must be at least 8 characters and include uppercase, lowercase, a number, and one special character like @, $, !, %, *, ?, or &.</p>
+            </div>
+          </div>
         </div>
 
         <form className="auth-form">

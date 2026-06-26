@@ -9,9 +9,10 @@ import useAuthStore from '../store/auth.token';
 function LoginPortal() {
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
+  let [authState, setAuthState] = useState("idle");
   let nav = useNavigate();
   let setAccessToken = useAuthStore((state) => state.setAccessToken);
-  let handleSubmit = (e) => {
+  let handleSubmit = async (e) => {
     e.preventDefault();
     if (username === "" || password.trim() === "") {
       toast.error("Empty Fields");
@@ -19,26 +20,33 @@ function LoginPortal() {
     }
     let payload = { username: username.trim(), password: password.trim() };
     let role="";
-    
-    axios.post("http://localhost:3000/auth/signin", payload,{
-      withCredentials:true
-    })
-      .then((res) => {
-        toast.success(res.data?.message || res);
-        console.log(res.data.accessToken)
-        setAccessToken(res.data.accessToken);
-        console.log("Zustand: ",useAuthStore.getState());
-        role=res.data.role
-        if(role=="ADMIN"){
-          nav('/admin-dashboard')
-          return
-        }
-        nav('/dashboard');
-      })
-      .catch((err) => {
-        console.log(err.stack);
-        toast.error(err.data?.message || err.response?.data?.message || "Login Failed");
+    let loadingTimer = setTimeout(() => {
+      setAuthState("loading");
+    }, 700);
+
+    setAuthState("authenticating");
+
+    try {
+      let res = await axios.post("http://localhost:3000/auth/signin", payload, {
+        withCredentials: true
       });
+      clearTimeout(loadingTimer);
+      toast.success(res.data?.message || res);
+      console.log(res.data.accessToken)
+      setAccessToken(res.data.accessToken);
+      console.log("Zustand: ",useAuthStore.getState());
+      role=res.data.role
+      if(role=="ADMIN"){
+        nav('/admin-dashboard')
+        return
+      }
+      nav('/dashboard');
+    } catch (err) {
+      clearTimeout(loadingTimer);
+      console.log(err.stack);
+      toast.error(err.data?.message || err.response?.data?.message || "Login Failed");
+      setAuthState("idle");
+    }
   }
 
   const pageVariants = {
@@ -67,7 +75,6 @@ function LoginPortal() {
       
       <Link to="/" className="back-link">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
-        Back to Home
       </Link>
 
       <div className="auth-card">
@@ -99,8 +106,17 @@ function LoginPortal() {
             />
           </div>
 
-          <button type="submit" className="btn-auth" onClick={handleSubmit}>
-            Login
+          <button
+            type="submit"
+            className="btn-auth"
+            onClick={handleSubmit}
+            disabled={authState !== "idle"}
+          >
+            {authState === "authenticating"
+              ? "Authenticating..."
+              : authState === "loading"
+                ? "Loading..."
+                : "Login"}
           </button>
         </form>
 

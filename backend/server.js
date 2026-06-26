@@ -4,7 +4,12 @@ let morgan=require('morgan')
 let cookieParser=require('cookie-parser')
 
 require('dotenv').config()
-
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 let auth=require('./routes/auth.routes.js')
 let com=require('./routes/complaint.routes.js')

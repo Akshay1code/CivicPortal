@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { Routes, BrowserRouter, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import './App.css'
+import 'react-toastify/dist/ReactToastify.css'
 import Landing from './pages/Landing'
 import LoginPortal from './pages/LoginPortal'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import ComplaintPortal from './pages/ComplaintPortal'
-import AdminDashboard from './pages/AdminDashboard'
 import AdminComplaints from './pages/AdminComplaints'
 import Profile from './pages/Profile'
 import ErrorPage from './pages/ErrorPage'
@@ -32,8 +32,7 @@ function AnimatedRoutes() {
           <Route path="/complaint-portal" element={<ComplaintPortal />} />
         </Route>
         <Route element={<AuthGuard roles={['ADMIN']}/>}>
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/admin-complaints" element={<AdminComplaints />} />
+          <Route path="/admin-dashboard" element={<AdminComplaints />} />
         </Route>
       </Routes>
     </AnimatePresence>
@@ -56,9 +55,57 @@ function App() {
   useEffect(()=>{
     refreshTokens()
   },[])
+
+  useEffect(() => {
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        const isUnauthorized = error.response?.status === 401;
+        const isRefreshRequest = originalRequest?.url?.includes('/auth/refreshtoken');
+
+        if (isUnauthorized && originalRequest && !originalRequest._retry && !isRefreshRequest) {
+          originalRequest._retry = true;
+          try {
+            const refreshed = await axios.get('http://localhost:3000/auth/refreshtoken', {
+              withCredentials: true
+            });
+            setAccessToken(refreshed.data.accessToken);
+            originalRequest.headers = {
+              ...(originalRequest.headers || {}),
+              Authorization: `Bearer ${refreshed.data.accessToken}`
+            };
+            return axios(originalRequest);
+          } catch (refreshError) {
+            setAccessToken(null);
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.response.eject(responseInterceptor);
+    };
+  }, [setAccessToken]);
   return (
     <>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={2800}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+        className="civic-toast-container"
+        toastClassName="civic-toast"
+        progressClassName="civic-toast-progress"
+        bodyClassName="civic-toast-body"
+      />
       <BrowserRouter>
         <AnimatedRoutes />
       </BrowserRouter>
