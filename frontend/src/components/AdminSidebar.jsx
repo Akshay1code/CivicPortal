@@ -68,7 +68,7 @@ export default function AdminSidebar() {
 
   const handleLogout = async() => {
     useAuthStore.getState().clearAccessToken();
-    let response=await axios.get(`http://localhost:3000/auth/logout`,{
+    let response=await axios.get(`https://civicportal.onrender.com/auth/logout`,{
       withCredentials:true
     })
     if(response.data.status){

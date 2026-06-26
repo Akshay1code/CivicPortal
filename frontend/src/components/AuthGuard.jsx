@@ -11,7 +11,7 @@ const AuthGuard = ({ roles }) => {
     const checkAuth = async () => {
       if (roles) {
         try {
-          const response = await axios.get('http://localhost:3000/auth/is-refresh', {
+          const response = await axios.get('https://civicportal.onrender.com/auth/is-refresh', {
             withCredentials: true // To ensure cookies are sent if any
           });
           console.log("ROLES:", roles);
@@ -34,7 +34,7 @@ const AuthGuard = ({ roles }) => {
 
       }
       try {
-        const response = await axios.get('http://localhost:3000/auth/is-refresh', {
+        const response = await axios.get('https://civicportal.onrender.com/auth/is-refresh', {
           withCredentials: true
         });
 

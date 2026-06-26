@@ -6,7 +6,7 @@ import axios from 'axios'
 function Landing() {
   let nav=useNavigate();
   let sessionCheck=async()=>{
-    let res=await axios.get(`http://localhost:3000/auth/session-active`,{
+    let res=await axios.get(`https://civicportal.onrender.com/auth/session-active`,{
       withCredentials:true
     })
     console.log(res.data.status)

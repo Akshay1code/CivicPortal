@@ -24,7 +24,7 @@ function Profile() {
 
   let fetchUserDetails=()=>{
     const token = useAuthStore.getState().accessToken;
-    axios.get(`http://localhost:3000/auth/profile`,{
+    axios.get(`https://civicportal.onrender.com/auth/profile`,{
       headers:{
         Authorization:`Bearer ${token}`
       }
@@ -103,7 +103,7 @@ function Profile() {
 
     try {
       setIsSaving(true);
-      const res = await axios.put('http://localhost:3000/auth/update-details', payload, {
+      const res = await axios.put('https://civicportal.onrender.com/auth/update-details', payload, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -127,7 +127,7 @@ function Profile() {
 
   let handleDelete=()=>{
     const token = useAuthStore.getState().accessToken;
-    axios.delete(`http://localhost:3000/auth/delete`,{
+    axios.delete(`https://civicportal.onrender.com/auth/delete`,{
       headers:{
         Authorization:`Bearer ${token}`
       }

@@ -89,7 +89,7 @@ export default function AdminComplaints() {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/complaints/get', {
+        const res = await axios.get('https://civicportal.onrender.com/complaints/get', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setComplaints(Array.isArray(res.data) ? res.data : []);
@@ -137,7 +137,7 @@ export default function AdminComplaints() {
     const status = statusDrafts[complaint._id] ?? complaint.status ?? 'open';
 
     try {
-      const res = await axios.put(`http://localhost:3000/complaints/admins-update/${complaint._id}`, {
+      const res = await axios.put(`https://civicportal.onrender.com/complaints/admins-update/${complaint._id}`, {
         adminComment,
         status
       }, {

@@ -45,7 +45,7 @@ function Signup() {
       password: password.trim(),
       role:"CITIZEN"
     };
-    axios.post("http://localhost:3000/auth/signup", payload)
+    axios.post("https://civicportal.onrender.com/auth/signup", payload)
       .then((status) => {
         setConfirmPassword("");
         setFullName("");

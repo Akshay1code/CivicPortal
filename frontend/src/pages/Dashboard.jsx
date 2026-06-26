@@ -77,7 +77,7 @@ function ComplaintCard({ complaint, index, setComplaints, onEdit, onDelete, prof
 
   let handleLikes = (id) => {
     let isUser = false
-    axios.post(`http://localhost:3000/complaints/like/${id}`, {}, {
+    axios.post(`https://civicportal.onrender.com/complaints/like/${id}`, {}, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -538,7 +538,7 @@ function Dashboard() {
   let nav = useNavigate()
   const fetchComplaints = () => {
     const accessToken = useAuthStore.getState().accessToken;
-    axios.get('http://localhost:3000/complaints/get', {
+    axios.get('https://civicportal.onrender.com/complaints/get', {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -549,7 +549,7 @@ function Dashboard() {
 
   let fetchUserDetails = () => {
     const token = useAuthStore.getState().accessToken;
-    axios.get(`http://localhost:3000/auth/profile`, {
+    axios.get(`https://civicportal.onrender.com/auth/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -569,7 +569,7 @@ function Dashboard() {
     if (!window.confirm("Are you sure you want to delete this complaint?")) return;
     try {
       const accessToken = useAuthStore.getState().accessToken;
-      let res = await axios.delete(`http://localhost:3000/complaints/delete/${id}`, {
+      let res = await axios.delete(`https://civicportal.onrender.com/complaints/delete/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       if (res.status === 200) {
@@ -584,7 +584,7 @@ function Dashboard() {
   const handleUpdate = async (id, formData) => {
     try {
       const accessToken = useAuthStore.getState().accessToken;
-      let res = await axios.put(`http://localhost:3000/complaints/update/${id}`, formData, {
+      let res = await axios.put(`https://civicportal.onrender.com/complaints/update/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data'

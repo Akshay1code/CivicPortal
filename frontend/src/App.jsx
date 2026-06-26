@@ -43,7 +43,7 @@ function App() {
   let setAccessToken = useAuthStore((state) => state.setAccessToken);
   let refreshTokens=async()=>{
     try{
-      let res = await axios.get(`http://localhost:3000/auth/refreshtoken`,{
+      let res = await axios.get(`https://civicportal.onrender.com/auth/refreshtoken`,{
           withCredentials: true
         })
       setAccessToken(res.data.accessToken);
@@ -67,7 +67,7 @@ function App() {
         if (isUnauthorized && originalRequest && !originalRequest._retry && !isRefreshRequest) {
           originalRequest._retry = true;
           try {
-            const refreshed = await axios.get('http://localhost:3000/auth/refreshtoken', {
+            const refreshed = await axios.get('https://civicportal.onrender.com/auth/refreshtoken', {
               withCredentials: true
             });
             setAccessToken(refreshed.data.accessToken);

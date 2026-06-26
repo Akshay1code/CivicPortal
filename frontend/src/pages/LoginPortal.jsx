@@ -27,7 +27,7 @@ function LoginPortal() {
     setAuthState("authenticating");
 
     try {
-      let res = await axios.post("http://localhost:3000/auth/signin", payload, {
+      let res = await axios.post("https://civicportal.onrender.com/auth/signin", payload, {
         withCredentials: true
       });
       clearTimeout(loadingTimer);

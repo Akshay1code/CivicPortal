@@ -40,7 +40,7 @@ function ComplaintPortal() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/auth/profile', {
+      .get('https://civicportal.onrender.com/auth/profile', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -69,7 +69,7 @@ function ComplaintPortal() {
     formData.append('location', location.trim());
 
     axios
-      .post('http://localhost:3000/complaints/register', formData, {
+      .post('https://civicportal.onrender.com/complaints/register', formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
