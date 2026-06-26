@@ -958,18 +958,21 @@
 
   .right-panel {
     position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    flex-direction: row;
+    background: var(--clr-surface);
     border-left: none;
-    background: transparent;
+    border-top: 1px solid var(--clr-border);
     padding: 0;
     z-index: 100;
+    transform: none;
   }
   
   .fab-wrapper {
-    transform: translateX(0);
+    transform: translateY(-20px);
   }
 
   .topbar {
