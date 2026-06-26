@@ -1,4 +1,4 @@
-﻿import {
+import {
   FaThumbsUp,
   FaMapMarkerAlt,
   FaUserCircle,
@@ -10,13 +10,15 @@
   FaHardHat,
   FaCheckCircle,
   FaTimesCircle,
-  FaTrash
+  FaTrash,
+  FaBars
 } from 'react-icons/fa';
 import useAuthStore from '../store/auth.token';
 import AdminSidebar from '../components/AdminSidebar.jsx'
 import { useState,useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import '../styles/AdminDashboard.css';
 
 const OFFICIAL_STATUS = {
   open: { bg: '#fef9c3', text: '#854d0e', label: 'Pending Review', icon: FaHourglassHalf },
@@ -37,21 +39,6 @@ const DEMO_POSTERS = [
   'Rohan Gupta',
   'Ananya Joshi'
 ];
-
-const navButtonStyles = {
-  width: '52px',
-  height: '52px',
-  borderRadius: '999px',
-  border: '1px solid rgba(29, 158, 117, 0.18)',
-  background: '#fff',
-  color: '#0f6e56',
-  boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  flexShrink: 0
-};
 
 const normalizeStatus = (status) => {
   if (!status) return 'open';
@@ -84,6 +71,7 @@ export default function AdminComplaints() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [commentDrafts, setCommentDrafts] = useState({});
   const [statusDrafts, setStatusDrafts] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const token = useAuthStore((state) => state.accessToken);
 
   useEffect(() => {
@@ -162,10 +150,16 @@ export default function AdminComplaints() {
 
   if (complaints.length === 0) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', background: '#f9fafb' }}>
-        <AdminSidebar />
-        <div style={{ flex: 1, marginLeft: '260px', padding: '32px' }}>
-          <div style={{ padding: '24px', background: '#fff', borderRadius: '16px', border: '1px solid #e5e7eb' }}>
+      <div className="admin-layout">
+        <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        <div className="admin-main-content">
+          <div className="admin-mobile-header">
+            <button className="admin-hamburger" onClick={() => setIsSidebarOpen(true)}>
+              <FaBars />
+            </button>
+            <h2>Complaints</h2>
+          </div>
+          <div style={{ padding: '24px', background: '#fff', borderRadius: '16px', border: '1px solid #e5e7eb', marginTop: '24px' }}>
             No complaints found.
           </div>
         </div>
@@ -183,10 +177,16 @@ export default function AdminComplaints() {
   const StatusIcon = statusMeta.icon;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f9fafb' }}>
-      <AdminSidebar />
-      <div style={{ flex: 1, marginLeft: '260px', padding: '32px' }}>
-        <div style={{ marginBottom: '24px' }}>
+    <div className="admin-layout">
+      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <div className="admin-main-content">
+        <div className="admin-mobile-header">
+          <button className="admin-hamburger" onClick={() => setIsSidebarOpen(true)}>
+            <FaBars />
+          </button>
+          <h2>Complaints</h2>
+        </div>
+        <div style={{ marginBottom: '24px' }} className="admin-desktop-header">
           <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: '#111827' }}>
             Complaints
           </h1>
@@ -195,10 +195,10 @@ export default function AdminComplaints() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '18px' }}>
+        <div className="admin-complaint-wrapper">
           <button
             type="button"
-            style={navButtonStyles}
+            className="admin-nav-button admin-desktop-nav-btn"
             onClick={() => handleMove(-1)}
             disabled={activeIndex === 0}
             aria-label="Previous complaint"
@@ -326,7 +326,7 @@ export default function AdminComplaints() {
 
           <button
             type="button"
-            style={navButtonStyles}
+            className="admin-nav-button admin-desktop-nav-btn"
             onClick={() => handleMove(1)}
             disabled={activeIndex === complaints.length - 1}
             aria-label="Next complaint"
@@ -335,7 +335,29 @@ export default function AdminComplaints() {
           </button>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '16px', color: '#6b7280', fontWeight: 700 }}>
+        <div className="admin-mobile-nav-controls">
+          <button
+            type="button"
+            className="admin-nav-button"
+            onClick={() => handleMove(-1)}
+            disabled={activeIndex === 0}
+          >
+            <FaChevronLeft />
+          </button>
+          <div style={{ textAlign: 'center', color: '#6b7280', fontWeight: 700, alignSelf: 'center' }}>
+            {activeIndex + 1} / {complaints.length}
+          </div>
+          <button
+            type="button"
+            className="admin-nav-button"
+            onClick={() => handleMove(1)}
+            disabled={activeIndex === complaints.length - 1}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '16px', color: '#6b7280', fontWeight: 700 }} className="admin-desktop-nav-btn">
           {activeIndex + 1} / {complaints.length}
         </div>
       </div>

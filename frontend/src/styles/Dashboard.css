@@ -950,3 +950,39 @@
     width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding-bottom: 110px;
+  }
+
+  .right-panel {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    border-left: none;
+    background: transparent;
+    padding: 0;
+    z-index: 100;
+  }
+  
+  .fab-wrapper {
+    transform: translateX(0);
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .topbar-title {
+    font-size: 13px;
+    padding: 6px 10px;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+

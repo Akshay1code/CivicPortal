@@ -1,0 +1,265 @@
+/* AdminDashboard.css */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.admin-sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.admin-sidebar-header {
+  padding: 24px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #1a6b5a;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+.admin-nav-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  flex: 1;
+}
+
+.admin-nav-item {
+  padding: 16px 24px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.admin-nav-item:hover {
+  background-color: #f9fafb;
+}
+
+.admin-nav-item-active {
+  background-color: #e8f5f0;
+  border-left: 3px solid #1a6b5a;
+  font-weight: bold;
+  color: #1a6b5a;
+}
+
+.admin-logout-btn {
+  margin: auto 24px 24px 24px;
+  padding: 12px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: bold;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.admin-logout-btn:hover {
+  background-color: #fce8e8;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.admin-main-content {
+  flex: 1;
+  margin-left: 260px;
+  padding: 32px;
+  transition: margin-left 0.3s ease;
+  width: calc(100% - 260px);
+}
+
+.admin-mobile-header {
+  display: none;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.admin-mobile-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #1a6b5a;
+}
+
+.admin-hamburger {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.admin-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 95;
+}
+
+.admin-complaint-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.admin-nav-button {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid rgba(29, 158, 117, 0.18);
+  background: #fff;
+  color: #0f6e56;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.admin-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-nav-button:not(:disabled):hover {
+  background: #1D9E75;
+  color: #fff;
+}
+
+.admin-mobile-nav-controls {
+  display: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .admin-close-btn {
+    display: block;
+  }
+
+  .admin-main-content {
+    margin-left: 0;
+    padding: 16px;
+    width: 100%;
+  }
+
+  .admin-mobile-header {
+    display: flex;
+  }
+
+  .admin-overlay.open {
+    display: block;
+  }
+
+  .admin-complaint-wrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .admin-mobile-nav-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .admin-desktop-nav-btn {
+    display: none;
+  }
+
+  .admin-desktop-header {
+    display: none;
+  }
+
+  /* Make complaint card fit mobile */
+  .cc-top-row {
+    flex-direction: column;
+  }
+  .cc-complaint-image {
+    width: 100%;
+    height: 220px;
+    border-radius: 12px 12px 0 0;
+  }
+  .cc-icon-square {
+    width: 100%;
+    height: 140px;
+    border-radius: 12px 12px 0 0;
+  }
+  .cc-content {
+    padding: 16px;
+  }
+  .cc-stats {
+    flex-direction: column;
+    padding: 16px;
+    gap: 12px;
+  }
+  .cc-stat {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .cc-stat-divider {
+    width: 100%;
+    height: 1px;
+    margin: 4px 0;
+  }
+  .cc-admin-comment-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .cc-status-select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
