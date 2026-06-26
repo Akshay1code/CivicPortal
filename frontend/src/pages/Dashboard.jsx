@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import TopBar from '../components/TopBar';
@@ -144,9 +144,9 @@ function ComplaintCard({ complaint, index, setComplaints, onEdit, onDelete, prof
                 position: 'absolute',
                 right: 0,
                 top: 42,
-                background: 'var(--color-background-primary)',
-                border: '0.5px solid var(--color-border-secondary)',
-                borderRadius: 'var(--border-radius-lg)',
+                background: 'var(--clr-surface, #ffffff)',
+                border: '1px solid var(--clr-border, #eee)',
+                borderRadius: 'var(--radius-lg, 16px)',
                 boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
                 zIndex: 100,
                 minWidth: '160px',
@@ -158,14 +158,14 @@ function ComplaintCard({ complaint, index, setComplaints, onEdit, onDelete, prof
                     cursor: 'pointer',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: 'var(--color-text-primary)',
+                    color: 'var(--clr-text-main, #333)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    borderBottom: '0.5px solid var(--color-border-tertiary)',
+                    borderBottom: '1px solid var(--clr-border, #eee)',
                     transition: 'background 0.15s'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-background-secondary)'}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--clr-bg-main, #f9fafb)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   onClick={() => { setShowDropdown(false); onEdit(complaint); }}
                 >
@@ -179,13 +179,13 @@ function ComplaintCard({ complaint, index, setComplaints, onEdit, onDelete, prof
                     cursor: 'pointer',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: 'var(--color-text-danger)',
+                    color: '#dc2626',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
                     transition: 'background 0.15s'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-background-danger)'}
+                  onMouseEnter={e => e.currentTarget.style.background = '#fef2f2'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   onClick={() => { setShowDropdown(false); onDelete(complaint._id); }}
                 >
